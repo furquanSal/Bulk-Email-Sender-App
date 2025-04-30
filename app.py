@@ -130,6 +130,6 @@ st.markdown("""
 ---
 <p style='text-align: center; font-size: 0.9em;'>
 Created with ❤️ by <a href="https://mohammedfurquansaleem.in" target="_blank">Mohammed Furquan Saleem</a>  | 
-&copy; 2025 <span style='font-size: 1.1em;'>©</span> All Rights Reserved
+&copy; 2025 <span style='font-size: 1.1em;'></span> All Rights Reserved
 </p>
 """, unsafe_allow_html=True)
