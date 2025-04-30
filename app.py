@@ -34,8 +34,10 @@ To use this tool, you'll need to generate a **Gmail App Password**. Here's how:
 5. Google will give you a **16-character password** (like abcd efgh ijkl mnop). Paste it below.
 
 **Example:**
+```
 Your Gmail: youremail@gmail.com
 App Password: abcd efgh ijkl mnop
+```
  
 """, unsafe_allow_html=True)
 
