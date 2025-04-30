@@ -1,4 +1,3 @@
-# email_sender.py
 import streamlit as st
 import pandas as pd
 import smtplib, ssl
@@ -7,7 +6,7 @@ import time
 from streamlit_lottie import st_lottie
 import requests
 
-st.set_page_config(page_title="Bulk Email Sender", layout="centered", page_icon="📧")
+st.set_page_config(page_title="SendMails", layout="centered", page_icon="📧")
 
 @st.cache_data
 def load_lottie_url(url):
@@ -19,7 +18,7 @@ def load_lottie_url(url):
 email_anim = load_lottie_url("https://assets10.lottiefiles.com/packages/lf20_touohxv0.json")
 
 st.markdown("""
-    <h1 style='text-align: center; color: #4A90E2;'>📧 Bulk Email Sender</h1>
+    <h1 style='text-align: center; color: #4A90E2;'>SendMails App</h1>
     <p style='text-align: center;'>Send personalized emails individually via Gmail using a simple and secure interface.</p>
 """, unsafe_allow_html=True)
 
@@ -31,22 +30,24 @@ To use this tool, you'll need to generate a **Gmail App Password**. Here's how:
 1. Go to your [Google Account Security Settings](https://myaccount.google.com/security).
 2. Ensure **2-Step Verification** is turned **ON**.
 3. Visit [App Passwords](https://myaccount.google.com/apppasswords).
-4. Choose `Mail` as the app and `Other` for the device (e.g., "BulkEmailApp").
-5. Google will give you a **16-character password** (like `abcd efgh ijkl mnop`). Paste it below.
+4. Choose Mail as the app and Other for the device (e.g., "BulkEmailApp").
+5. Google will give you a **16-character password** (like abcd efgh ijkl mnop). Paste it below.
 
 **Example:**
-```
 Your Gmail: youremail@gmail.com
 App Password: abcd efgh ijkl mnop
-``` 
+ 
 """, unsafe_allow_html=True)
 
+uploaded_file = st.file_uploader("📎 Upload a CSV or TXT file containing the email addresses you want to send messages to (comma, | or newline separated)", type=['csv', 'txt'])
 gmail_user = st.text_input("Your Gmail Address", placeholder="example@gmail.com")
 app_password = st.text_input("App Password (16 characters)", type="password")
 subject = st.text_input("Email Subject")
-message_body = st.text_area("Email Message", height=200)
 
-uploaded_file = st.file_uploader("📎 Upload CSV or TXT with Emails (comma, | or newline separated)", type=['csv', 'txt'])
+st.markdown("### ✍️ Compose your Email:")
+message_body = st.text_area("Email Message (Supports HTML)", height=200, help="Use basic HTML for formatting (e.g., <b>Bold</b>, <i>Italic</i>, <u>Underline</u>).")
+
+attachments = st.file_uploader("📁 Attach Files (Images, Docs, PDFs, etc.)", accept_multiple_files=True)
 send_button = st.button("📤 Send Emails")
 
 if send_button:
@@ -91,7 +92,17 @@ if send_button:
                 msg["From"] = gmail_user
                 msg["To"] = email
                 msg["Subject"] = subject
-                msg.set_content(message_body)
+                msg.set_content(message_body, subtype="html")
+
+                for file in attachments:
+                    try:
+                        file_data = file.read()
+                        msg.add_attachment(file_data,
+                                           maintype='application',
+                                           subtype='octet-stream',
+                                           filename=file.name)
+                    except Exception as e:
+                        st.warning(f"⚠️ Failed to attach {file.name}: {e}")
 
                 try:
                     server.send_message(msg)
@@ -117,6 +128,6 @@ st.markdown("""
 ---
 <p style='text-align: center; font-size: 0.9em;'>
 Created with ❤️ by <a href="https://mohammedfurquansaleem.in" target="_blank">Mohammed Furquan Saleem</a>  | 
-&copy; 2025 <span style='font-size: 1.1em;'></span> All Rights Reserved
+&copy; 2025 <span style='font-size: 1.1em;'>©</span> All Rights Reserved
 </p>
 """, unsafe_allow_html=True)
